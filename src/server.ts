@@ -38,8 +38,19 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 app.use("/uploads", express.static(uploadsDir));
 
 // Security
+const allowedOrigins = [
+  config.frontendUrl,
+  "http://localhost:3000",
+  "http://localhost:5173",
+];
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors({ origin: config.frontendUrl, credentials: true }));
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) cb(null, true);
+    else cb(null, false);
+  },
+  credentials: true,
+}));
 app.use(limiter);
 
 // Body parsers
