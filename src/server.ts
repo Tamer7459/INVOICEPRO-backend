@@ -40,6 +40,7 @@ app.use("/uploads", express.static(uploadsDir));
 // Security
 const allowedOrigins = [
   config.frontendUrl,
+  "https://invoicepro-frontend-rho.vercel.app",
   "http://localhost:3000",
   "http://localhost:5173",
 ];
@@ -50,7 +51,10 @@ app.use(cors({
     else cb(null, false);
   },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+app.options("*", cors());
 app.use(limiter);
 
 // Body parsers
